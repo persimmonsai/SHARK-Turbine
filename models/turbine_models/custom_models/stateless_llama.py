@@ -395,7 +395,7 @@ def export_transformer_model(
             self.global_seq_step.set(window_size + sink_size)
             return self.global_seq_step
 
-    import_to = "INPUT" if compile_to == "linalg" else "IMPORT"
+    import_to = "IREE_INTERNAL" if compile_to == "linalg" else "IMPORT"
     if streaming_llm:
         print("Compiling with Streaming LLM")
         inst = StreamingStateUpdateModule(context=Context(), import_to=import_to)
