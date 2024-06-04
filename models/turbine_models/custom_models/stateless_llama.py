@@ -123,6 +123,7 @@ def export_transformer_model(
             hf_model_name,
             torch_dtype=torch.float,
             token=hf_auth_token,
+            attn_implementation="eager"
         )
     schema_json = generate_schema(mod.config.num_hidden_layers)
     state_schema = pytree.treespec_loads(schema_json)
