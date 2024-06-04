@@ -148,7 +148,7 @@ def gen_external_params(
 
     import safetensors
 
-    safetensors.torch.save_file(quant_weights, save_path)
+    safetensors.torch.save_file(quant_weights, save_path, metadata={'format': 'pt'})
     print("Saved safetensor output to ", save_path)
 
 
