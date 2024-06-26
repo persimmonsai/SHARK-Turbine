@@ -4,7 +4,7 @@ from iree import runtime as ireert
 
 
 class vmfbRunner:
-    def __init__(self, device, vmfb_path, external_weight_path=None):
+    def __init__(self, device, vmfb_path, dynamic_module=None, external_weight_path=None):
         flags = []
         haldriver = ireert.get_driver(device)
         if "://" in device:
@@ -37,6 +37,8 @@ class vmfbRunner:
 
         self.config = ireert.Config(device=haldevice)
         mods = []
+        if dynamic_module:
+            mods.append(dynamic_module)
         if not isinstance(vmfb_path, list):
             vmfb_path = [vmfb_path]
         for path in vmfb_path:
@@ -62,6 +64,7 @@ class vmfbRunner:
                 vm_modules.insert(i, param_module)
             del index
             del param_module
+
         self.ctx = ireert.SystemContext(
             vm_modules=vm_modules,
             config=self.config,
