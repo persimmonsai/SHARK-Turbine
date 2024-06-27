@@ -135,6 +135,7 @@ def export_transformer_model(
             hf_model_name,
             torch_dtype=torch.float,
             token=hf_auth_token,
+            attn_implementation="eager"
         )
     schema_json = generate_schema(mod.config.num_hidden_layers)
     state_schema = pytree.treespec_loads(schema_json)
@@ -150,7 +151,7 @@ def export_transformer_model(
     HEADS = getattr(mod.config, "num_key_value_heads", None)
     if HEADS is None:
         HEADS = mod.config.num_attention_heads
-    HIDDEN_DIM = int(mod.config.hidden_size / mod.config.num_attention_heads)
+    HIDDEN_DIM = int(mod.config.hidden_size / mod.config.num_attention_heads)    
     BATCH_SIZE = 1
     MAX_STEP_SEQ = mod.config.max_position_embeddings - 1
     global_pkv = torch.zeros(
@@ -395,7 +396,7 @@ def export_transformer_model(
             self.global_seq_step.set(window_size + sink_size)
             return self.global_seq_step
 
-    import_to = "INPUT" if compile_to == "linalg" else "IMPORT"
+    import_to = "IREE_INTERNAL" if compile_to == "linalg" else "IMPORT"
     if streaming_llm:
         print("Compiling with Streaming LLM")
         inst = StreamingStateUpdateModule(context=Context(), import_to=import_to)
