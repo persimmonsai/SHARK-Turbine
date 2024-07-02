@@ -62,7 +62,12 @@ parser.add_argument(
     action="store_true",
     help="Compile LLM with StreamingLLM optimizations",
 )
-
+parser.add_argument(
+    "--output",
+    type=str,
+    default=None,
+    help="Name of the Output MLIR",
+)
 
 def generate_schema(num_layers):
     null = None
@@ -502,6 +507,9 @@ if __name__ == "__main__":
     )
     safe_name = args.hf_model_name.split("/")[-1].strip()
     safe_name = re.sub("-", "_", safe_name)
-    with open(f"{safe_name}.mlir", "w+") as f:
+    output_name = safe_name + '.mlir'
+    if args.output:
+        output_name = args.output
+    with open(output_name, "w+") as f:
         f.write(mod_str)
-    print("Saved to ", safe_name + ".mlir")
+    print("Saved to ", output_name)
